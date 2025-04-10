@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ProductRepositoryImpl implements ProductRepository {
+public class InMemoryProductRepository implements ProductRepository {
 
     @Override
     public Optional<Product> findById(Long productId) {
