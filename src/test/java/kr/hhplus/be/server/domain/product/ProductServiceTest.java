@@ -51,7 +51,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 ID로 조회 - 존재하지 않음")
+    @DisplayName("상품 ID로 조회 - 존재하지 않으면 예외 발생")
     void getProductById_notFound() {
         //Arrange
         when(productRepository.findById(999L)).thenReturn(Optional.empty());
@@ -60,7 +60,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 재고 부족 예외")
+    @DisplayName("상품 재고 부족 예외 발생")
     void getProductById_stockEmpty() {
         //Arrange
         Product product = new Product(1L, "에어팟", 300000, 0);
