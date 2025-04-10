@@ -10,7 +10,6 @@ public class Product {
     public Product(Long productId, String productName, int price, int stock) {
 
         if(productId < 0) throw new IllegalArgumentException("유효하지 않은 상품입니다.");
-        if(stock<1) throw new IllegalArgumentException("재고가 없습니다.");
         if(price<0) throw new IllegalArgumentException("가격이 유효하지 않습니다.");
 
         this.productId = productId;
