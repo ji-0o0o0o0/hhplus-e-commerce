@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class OrderFacadeTest {
+class OrderFacadeTest {
 
     private ProductService productService;
     private OrderService orderService;
@@ -34,7 +34,7 @@ public class OrderFacadeTest {
     private void mockOrderServiceReturnsOrderId(Long orderId) {
         Order mockOrder = mock(Order.class);
         when(mockOrder.getOrderId()).thenReturn(orderId);
-        when(orderService.save(any(Order.class))).thenReturn(mockOrder);
+        when(orderService.createOrder(any(Order.class))).thenReturn(mockOrder);
     }
 
     //성공
@@ -63,7 +63,7 @@ public class OrderFacadeTest {
 
         //Assert
         assertEquals(Long.valueOf(999L), result.orderId());
-        verify(orderService).save(any(Order.class));
+        verify(orderService).createOrder(any(Order.class));
         verify(couponValidator, never()).validateCouponOwnership(any(), any());
     }
 
@@ -89,7 +89,7 @@ public class OrderFacadeTest {
         CreateOrderResult result = orderFacade.createOrder(command);
         //Assert
         assertEquals(Long.valueOf(1001L), result.orderId());
-        verify(orderService).save(any(Order.class));
+        verify(orderService).createOrder(any(Order.class));
         verify(couponValidator, never()).validateCouponOwnership(any(), any());
     }
     @Test
@@ -113,7 +113,7 @@ public class OrderFacadeTest {
 
         //Assert
         assertEquals(Long.valueOf(2000L), result.orderId());
-        verify(orderService).save(any(Order.class));
+        verify(orderService).createOrder(any(Order.class));
         verify(couponValidator).validateCouponOwnership(userId, couponId);
     }
 
@@ -137,7 +137,7 @@ public class OrderFacadeTest {
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));
 
         //주문이 들어가면 안됨
-        verify(orderService, never()).save(any());
+        verify(orderService, never()).createOrder(any());
     }
    /* @Test
     @DisplayName("쿠폰 검증이 실패하는 경우(소유권 없음)")
@@ -166,6 +166,6 @@ public class OrderFacadeTest {
                 List.of(new OrderItemCommand(1L, 1), new OrderItemCommand(2L, 1)));
 
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));
-        verify(orderService, never()).save(any());
+        verify(orderService, never()).createOrder(any());
     }
 }

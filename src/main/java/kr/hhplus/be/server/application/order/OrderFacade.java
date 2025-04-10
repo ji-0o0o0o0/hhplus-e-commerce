@@ -7,10 +7,11 @@ import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.order.CouponValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@Service
 @RequiredArgsConstructor
 public class OrderFacade implements OrderUseCase {
     //비즈니스 로직을 조합해서 처리하는 핵심 시나리오 담당
@@ -38,7 +39,7 @@ public class OrderFacade implements OrderUseCase {
 
         //주문생성 후 db 저장
         Order order = new Order(command.userId(), orderItems, command.userCouponId());
-        Order savedOrder = orderService.save(order);
+        Order savedOrder = orderService.createOrder(order);
 
         //값 반환
         return new CreateOrderResult(savedOrder.getOrderId());
