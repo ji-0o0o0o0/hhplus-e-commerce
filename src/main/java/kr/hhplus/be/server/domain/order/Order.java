@@ -10,6 +10,7 @@ public class Order {
     private final Long userCouponId;//null가능
     private final int totalAmount;
     private OrderStatus orderStatus;
+    private Long orderId;
 
     public Order(Long userId, List<OrderItem> orderItems, Long userCouponId) {
         //유저랑 주문유무 검증
@@ -68,5 +69,13 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
+    }
+
+    public Long getOrderId() {
+        return this.orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 }

@@ -24,7 +24,10 @@ public class OrderFacade implements OrderUseCase {
         // 주문 진행
         List<OrderItem> orderItems = command.orderItems().stream()
                 .map(item -> {
-                    Product product = productService.getProductById(item.productId()); // ✅ 서비스 호출
+                    Product product = productService.getProductById(item.productId());
+                    if (product.getStock() < item.quantity()) {
+                        throw new IllegalArgumentException("재고가 부족합니다.");
+                    }
                     return new OrderItem(product.getProductId(), product.getPrice(), item.quantity());
                 })
                 .toList();
@@ -35,9 +38,9 @@ public class OrderFacade implements OrderUseCase {
 
         //주문생성 후 db 저장
         Order order = new Order(command.userId(), orderItems, command.userCouponId());
-        orderService.save(order);
+        Order savedOrder = orderService.save(order);
 
         //값 반환
-        return new CreateOrderResult(order.getUserId());
+        return new CreateOrderResult(savedOrder.getOrderId());
     }
 }

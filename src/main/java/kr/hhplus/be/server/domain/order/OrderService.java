@@ -10,7 +10,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    public void save(Order order) {
+    public Order save(Order order) {
         orderRepository.save(order);
+        return order;
     }
 }
