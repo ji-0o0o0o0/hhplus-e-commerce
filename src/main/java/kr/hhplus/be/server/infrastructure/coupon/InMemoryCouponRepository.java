@@ -18,7 +18,14 @@ public class InMemoryCouponRepository implements CouponRepository, UserCouponRep
     }
 
     @Override
-    public Optional<UserCoupon> findByUserCouponId(Long userCouponId) {
+    public Optional<UserCoupon> findByUserIdAndUserCouponId(Long userId, Long userCouponId) {
         return Optional.empty();
     }
+
+    @Override
+    public void updateIsUsed(Long userCouponId, boolean isUsed) {
+        //userCouponId 에 사용여부 업데이트
+    }
+
+
 }

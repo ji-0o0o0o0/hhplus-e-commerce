@@ -23,8 +23,8 @@ public class OrderConfig {
     }
 
     @Bean
-    public OrderService orderService(OrderRepository orderRepository) {
-        return new OrderService(orderRepository);
+    public OrderService orderService(OrderRepository orderRepository,UserCouponService userCouponService) {
+        return new OrderService(orderRepository,userCouponService);
     }
 
     @Bean
