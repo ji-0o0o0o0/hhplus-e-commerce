@@ -2,31 +2,46 @@ package kr.hhplus.be.server.domain.point;
 
 
 public class UserPoint {
-    private final Long userId;
-    private Long balance;
-    private Long totalCharged;
+    private static final int MAX_CHARGE_ONCE = 1_000_000;
+    private static final int MAX_CHARGE_TOTAL = 5_000_000;
 
-    public UserPoint(Long userId, Long balance, Long totalCharged) {
+    private Long pointId;
+    private final Long userId;
+    private int balance;
+    private int totalCharged;
+
+    public UserPoint(Long userId) {
+        this.pointId = pointId;
         this.userId = userId;
-        this.balance = 0L;
-        this.totalCharged = 0L;
+        this.balance = 0;
+        this.totalCharged = 0;
     }
 
-    //충전 하면 누적
-    public  void charge(long amount){
+    public void charge(int amount) {
+        if (amount <= 0 || amount > MAX_CHARGE_ONCE) {
+            throw new IllegalArgumentException("1회 충전 금액은 0보다 크고 1,000,000 이하여야 합니다.");
+        }
+        if (totalCharged + amount > MAX_CHARGE_TOTAL) {
+            throw new IllegalArgumentException("누적 충전 금액은 5,000,000원을 초과할 수 없습니다.");
+        }
         this.balance += amount;
         this.totalCharged += amount;
+    }
+
+    public Long getPointId() {
+        return pointId;
     }
 
     public Long getUserId() {
         return userId;
     }
 
-    public Long getBalance() {
+    public int getBalance() {
         return balance;
     }
 
-    public Long getTotalCharged() {
+    public int getTotalCharged() {
         return totalCharged;
     }
 }
+
