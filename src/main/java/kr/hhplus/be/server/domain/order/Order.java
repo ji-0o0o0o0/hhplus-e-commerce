@@ -69,6 +69,10 @@ public class Order {
         this.orderStatus = OrderStatus.CANCEL;
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -91,13 +95,5 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public Long getOrderId() {
-        return this.orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
     }
 }

@@ -17,4 +17,15 @@ public class OrderService {
         }
         return orderRepository.save(order);
     }
+
+    public Order getOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
+    }
+
+    public void markPaid(Long orderId) {
+        Order order = getOrder(orderId);
+        order.markPaid();
+        orderRepository.save(order);
+    }
 }

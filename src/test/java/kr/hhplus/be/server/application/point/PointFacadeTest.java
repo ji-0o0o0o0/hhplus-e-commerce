@@ -1,11 +1,8 @@
 package kr.hhplus.be.server.application.point;
 
-import kr.hhplus.be.server.application.point.PointCommand;
-import kr.hhplus.be.server.application.point.PointFacade;
-import kr.hhplus.be.server.application.point.PointResult;
 import kr.hhplus.be.server.domain.point.PointUseStatus;
-import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.point.UserPointService;
+import kr.hhplus.be.server.domain.point.Point;
+import kr.hhplus.be.server.domain.point.PointService;
 import kr.hhplus.be.server.domain.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +15,15 @@ import static org.mockito.Mockito.*;
   class PointFacadeTest {
 
     private UserService userService;
-    private UserPointService userPointService;
+    private PointService pointService;
     private PointFacade pointFacade;
 
     @BeforeEach
     void setUp() {
         userService = mock(UserService.class);
-        userPointService = mock(UserPointService.class);
+        pointService = mock(PointService.class);
 
-        pointFacade = new PointFacade(userService, userPointService);
+        pointFacade = new PointFacade(userService, pointService);
     }
 
     @Test
@@ -35,8 +32,8 @@ import static org.mockito.Mockito.*;
         // Arrange
         Long userId = 1L;
         int chargeAmount = 100000;
-        UserPoint point = new UserPoint(userId);
-        when(userPointService.getOrCreatePoint(userId)).thenReturn(point);
+        Point point = new Point(userId);
+        when(pointService.getOrCreatePoint(userId)).thenReturn(point);
 
         // Act
         PointResult result = pointFacade.charge(new PointCommand(userId, chargeAmount));
@@ -45,8 +42,8 @@ import static org.mockito.Mockito.*;
         assertEquals(userId, result.userId());
         assertEquals(chargeAmount, result.balance());
         verify(userService).getUserById(userId);
-        verify(userPointService).save(point);
-        verify(userPointService).saveHistory(point, chargeAmount, PointUseStatus.CHARGE);
+        verify(pointService).save(point);
+        verify(pointService).saveHistory(point, chargeAmount, PointUseStatus.CHARGE);
     }
 
     @Test
@@ -56,8 +53,8 @@ import static org.mockito.Mockito.*;
         //1회충전 최대금액 100만원
         Long userId = 1L;
         int overAmount = 2_000_000;
-        UserPoint point = new UserPoint(userId);
-        when(userPointService.getOrCreatePoint(userId)).thenReturn(point);
+        Point point = new Point(userId);
+        when(pointService.getOrCreatePoint(userId)).thenReturn(point);
 
         // Act & Assert
         PointCommand command = new PointCommand(userId, overAmount);
@@ -73,8 +70,8 @@ import static org.mockito.Mockito.*;
         //누적 최대 금액 500만원
         Long userId = 1L;
         int chargeAmount = 1_000_000;
-        UserPoint point = new UserPoint(userId);
-        when(userPointService.getOrCreatePoint(userId)).thenReturn(point);
+        Point point = new Point(userId);
+        when(pointService.getOrCreatePoint(userId)).thenReturn(point);
 
         // Act
         //
@@ -100,7 +97,7 @@ import static org.mockito.Mockito.*;
         PointCommand command = new PointCommand(userId, chargeAmount);
         assertThrows(IllegalArgumentException.class, () -> pointFacade.charge(command));
         verify(userService).getUserById(userId);
-        verifyNoInteractions(userPointService);
+        verifyNoInteractions(pointService);
     }
 }
 

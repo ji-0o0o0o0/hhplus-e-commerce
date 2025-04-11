@@ -1,24 +1,24 @@
 package kr.hhplus.be.server.infrastructure.point;
 
 import kr.hhplus.be.server.domain.point.PointHistory;
-import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.point.UserPointRepository;
+import kr.hhplus.be.server.domain.point.Point;
+import kr.hhplus.be.server.domain.point.PointRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
 @Repository
-public class InMemoryPointRepository implements UserPointRepository {
-    private final Map<Long, UserPoint> pointStore = new HashMap<>();
+public class InMemoryPointRepository implements PointRepository {
+    private final Map<Long, Point> pointStore = new HashMap<>();
     private final List<PointHistory> histories = new ArrayList<>();
 
     @Override
-    public Optional<UserPoint> findByUserId(Long userId) {
+    public Optional<Point> findByUserId(Long userId) {
         return Optional.ofNullable(pointStore.get(userId));
     }
 
     @Override
-    public void save(UserPoint point) {
+    public void save(Point point) {
         pointStore.put(point.getUserId(), point);
     }
 

@@ -1,18 +1,17 @@
 package kr.hhplus.be.server.domain.point;
 
-import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserPointTest {
+class PointTest {
 
     @Test
     @DisplayName("정상 충전 시 잔액과 누적 충전액 증가")
     void charge_success_increasesBalanceAndTotal() {
         // Arrange
-        UserPoint point = new UserPoint(1L);
+        Point point = new Point(1L);
         int chargeAmount = 100_000;
 
         // Act
@@ -26,7 +25,7 @@ class UserPointTest {
     @DisplayName("0원 이하 충전 시 예외 발생")
     void charge_zeroOrNegative_throwsException() {
         // Arrange
-        UserPoint point = new UserPoint(1L);
+        Point point = new Point(1L);
 
         // Act & Assert
         IllegalArgumentException ex1 = assertThrows(IllegalArgumentException.class, () -> point.charge(0));
@@ -40,7 +39,7 @@ class UserPointTest {
     @DisplayName("1회 최대 금액(1,000,000원) 초과 충전 시 예외 발생")
     void charge_exceedsMaxOnce_throwsException() {
         // Arrange
-        UserPoint point = new UserPoint(1L);
+        Point point = new Point(1L);
 
         // Act & Assert
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> point.charge(1_000_001));
@@ -52,7 +51,7 @@ class UserPointTest {
     void charge_exceedsMaxTotal_throwsException() {
         // Arrange
         //500만원 충전
-        UserPoint point = new UserPoint(1L);
+        Point point = new Point(1L);
         for (int i = 0; i < 5; i++) {
             point.charge(1_000_000);
         }

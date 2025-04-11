@@ -1,9 +1,5 @@
 package kr.hhplus.be.server.domain.point;
 
-import kr.hhplus.be.server.domain.point.PointHistory;
-import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.point.UserPointRepository;
-import kr.hhplus.be.server.domain.point.UserPointService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +9,15 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class UserPointServiceTest {
+class PointServiceTest {
 
-    private UserPointRepository repository;
-    private UserPointService userPointService;
+    private PointRepository repository;
+    private PointService pointService;
 
     @BeforeEach
     void setUp() {
-        repository = mock(UserPointRepository.class);
-        userPointService = new UserPointService(repository);
+        repository = mock(PointRepository.class);
+        pointService = new PointService(repository);
     }
 
     @Test
@@ -29,11 +25,11 @@ class UserPointServiceTest {
     void getOrCreatePoint_existing_returnsPoint() {
         // Arrange
         Long userId = 1L;
-        UserPoint existing = new UserPoint(userId);
+        Point existing = new Point(userId);
         when(repository.findByUserId(userId)).thenReturn(Optional.of(existing));
 
         // Act
-        UserPoint result = userPointService.getOrCreatePoint(userId);
+        Point result = pointService.getOrCreatePoint(userId);
 
         // Assert
         assertEquals(existing, result);
@@ -47,7 +43,7 @@ class UserPointServiceTest {
         when(repository.findByUserId(userId)).thenReturn(Optional.empty());
 
         // Act
-        UserPoint result = userPointService.getOrCreatePoint(userId);
+        Point result = pointService.getOrCreatePoint(userId);
 
         // Assert
         assertNotNull(result);
@@ -59,10 +55,10 @@ class UserPointServiceTest {
     @DisplayName("포인트 저장이 호출되면 repository에 위임")
     void save_delegatesToRepository() {
         // Arrange
-        UserPoint point = new UserPoint(1L);
+        Point point = new Point(1L);
 
         // Act
-        userPointService.save(point);
+        pointService.save(point);
 
         // Assert
         verify(repository).save(point);
@@ -72,11 +68,11 @@ class UserPointServiceTest {
     @DisplayName("포인트 이력 저장이 repository에 위임")
     void saveHistory_delegatesToRepository() {
         // Arrange
-        UserPoint point = new UserPoint(1L);
+        Point point = new Point(1L);
         int amount = 10000;
 
         // Act
-        userPointService.saveHistory(point, amount,PointUseStatus.CHARGE);
+        pointService.saveHistory(point, amount,PointUseStatus.CHARGE);
 
         // Assert
         verify(repository).saveHistory(any(PointHistory.class));
