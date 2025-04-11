@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
+import kr.hhplus.be.server.domain.coupon.UserCouponService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +15,15 @@ class OrderServiceTest {
 
     private OrderRepository orderRepository;
     private OrderService orderService;
+    private UserCouponService userCouponService;
+    private UserCouponRepository userCouponRepository;
 
     @BeforeEach
     void setUp() {
         orderRepository = mock(OrderRepository.class);
-        orderService = new OrderService(orderRepository);
+        userCouponRepository = mock(UserCouponRepository.class);
+        userCouponService = new UserCouponService(userCouponRepository);
+        orderService = new OrderService(orderRepository,userCouponService);
     }
 
     @Test
