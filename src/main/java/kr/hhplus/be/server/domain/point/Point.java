@@ -16,6 +16,12 @@ public class Point {
         this.balance = 0;
         this.totalCharged = 0;
     }
+    public Point(Long userId,int balance) {
+        this.pointId = pointId;
+        this.userId = userId;
+        this.balance = balance;
+        this.totalCharged = 0;
+    }
 
     //포인트 충전
     public void charge(int amount) {
@@ -58,7 +64,8 @@ public class Point {
         return totalCharged;
     }
 
-
-
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
 }
 
