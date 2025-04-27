@@ -1,19 +1,32 @@
 package kr.hhplus.be.server.domain.point;
 
+import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
-public class PointHistory {
-    private final Long pointId;
-    private final int amount;
-    private final int balance;
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PointHistory extends AuditableEntity {
+    private Long id;
+    private Long pointId;
+    private Long userId;
+    private Long amount;
+    private Long balance;
     private PointUseStatus  type;
-    private LocalDate createdAt;
 
-    public PointHistory(Long pointId, int amount, int balance, PointUseStatus type) {
+    public PointHistory(Long pointId,Long userId, Long amount, Long balance, PointUseStatus type) {
         this.pointId = pointId;
+        this.userId = userId;
         this.amount = amount;
         this.balance = balance;
         this.type = type;
-        this.createdAt = LocalDate.now();
+    }
+
+    /*포인트 사용 이력 저장*/
+    public static PointHistory saveHistory(Point point, Long amount,PointUseStatus type){
+        return new PointHistory(point.getId(),point.getUserId(), amount,point.getBalance(),type);
     }
 }

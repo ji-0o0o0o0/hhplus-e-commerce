@@ -1,44 +1,68 @@
 package kr.hhplus.be.server.domain.point;
 
+import kr.hhplus.be.server.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static kr.hhplus.be.server.common.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 public class PointService {
 
-    private final PointRepository repository;
+    private final PointRepository pointRepository;
 
-    //포인트를 가져옴(포인트 테이블에 없는 경우 생성 후 리턴)
-    public Point getOrCreatePoint(Long userId) {
-        return repository.findByUserId(userId).orElseGet(() -> new Point(userId));
+    /**
+     * 사용자 포인트 조회
+     * @param userId
+     * @return 포인트 잔액 정보
+     * @exception ApiException 등록되지 않은 유저일 경우 예외 발생
+     */
+    /**
+     * 사용자 포인트 조회
+     */
+    public Point findPointByUserId(long userId) {
+        return pointRepository.findPointByUserId(userId)
+                .orElseThrow(() -> new ApiException(INVALID_USER));
     }
 
-    //포인트 저장
-    public void save(Point point) {
-        repository.save(point);
+    public PointInfo.Balance getPointBalance(long userId) {
+        return PointInfo.Balance.from(findPointByUserId(userId));
     }
 
-    //포인트 사용
-    public void use(Long userId, int amount) {
-        Point userPoint = repository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("포인트 정보 없음"));
+    //포인트 충전
+    public PointInfo.Increase increase(long userId,long amount){
+        //0. 사용자 포인트 조회
+        Point point =findPointByUserId(userId);
+       //1. 도메인에서  유효성 검증 및 충전
+        point.increase(amount);
+        //2. 포인트 변화 저장
+        pointRepository.savePoint(point);
+        //3, 이력 저장
+        pointRepository.savePointHistory(PointHistory.saveHistory(point,amount,PointUseStatus.CHARGE));
 
-        if (userPoint.getBalance() < amount) {
-            throw new IllegalStateException("포인트 잔액이 부족합니다.");
-        }
-
-        userPoint.use(amount);
-        repository.save(userPoint);
+        return PointInfo.Increase.from(point);
     }
+    //포인트 차감
+    public PointInfo.Decrease decrease(long userId,long amount){
+        //0. 사용자 포인트 조회
+        Point point =findPointByUserId(userId);
+        //1. 도메인에서  유효성 검증 및 사용
+        point.decrease(amount);
+        //2. 포인트 변화 저장
+        pointRepository.savePoint(point);
+        //3, 이력 저장
+        pointRepository.savePointHistory(PointHistory.saveHistory(point,amount,PointUseStatus.USE));
 
-    //포인트 이력 저장
-    public void saveHistory(Point point, int amount, PointUseStatus type) {
-        repository.saveHistory(new PointHistory(point.getPointId(),amount,point.getBalance(),type));
+        return PointInfo.Decrease.from(point);
     }
+    //사용자의 포인트 사용/충전 이력 조회
+    public List<PointInfo.History> getPonintHistories(long userId){
+        List<PointHistory> histories = pointRepository.findPointHistoryByUserId(userId);
 
-    //잔액 충분한지 검증
-    public int getBalance(Long userId) {
-        Point point = repository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("포인트 정보 없음"));
-        return point.getBalance();
+        return histories.stream()
+                .map(PointInfo.History::from)
+                .collect(Collectors.toList());
     }
 }
