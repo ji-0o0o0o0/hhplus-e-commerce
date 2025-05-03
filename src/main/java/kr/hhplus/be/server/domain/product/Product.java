@@ -1,46 +1,53 @@
 package kr.hhplus.be.server.domain.product;
 
 
-public class Product {
-    private final Long productId;
-    private final String productName;
-    private final int price;
-    private final int stock;
+import kr.hhplus.be.server.common.exception.ApiException;
+import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    public Product(Long productId, String productName, int price, int stock) {
-        this.productId = productId;
-        this.productName = productName;
+import java.math.BigDecimal;
+
+import static kr.hhplus.be.server.common.exception.ErrorCode.*;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Product extends AuditableEntity {
+
+    private Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Long   stock;
+
+    public Product(String name,String description, BigDecimal price, Long   stock) {
+        if (name == null || name.isBlank()) throw new ApiException(INVALID_PRODUCT_ID);
+        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new ApiException(INVALID_PRODUCT_ID);
+        if (stock == null || stock < 0) throw new ApiException(PRODUCT_OUT_OF_STOCK);
+
+        this.name = name;
+        this.description = description;
         this.price = price;
         this.stock = stock;
     }
 
+    //주문생성
+    public static Product create(String productName, String description, BigDecimal price, Long   stock) {
+       return new Product(productName, description, price, stock);
+    }
+
     //재고 차감
-    public Product deductStock(int quantity) {
-        if (this.stock < quantity) {
-            throw new IllegalStateException("재고가 부족합니다.");
-        }
-        return new Product(this.productId, this.productName, this.price, this.stock - quantity);
-    }
-    //재고 롤백
-    public Product  rollbackStock(int quantity) {
-        if (quantity <= 0) throw new IllegalArgumentException("롤백 수량은 0보다 커야 합니다.");
-        return new Product(this.productId, this.productName, this.price, this.stock + quantity);
+    public void decreaseStock(Long quantity) {
+        if (quantity <= 0) throw new ApiException(INVALID_ORDER_QUANTITY);
+        if (this.stock == null || this.stock < 0 ||this.stock < quantity) throw new ApiException(PRODUCT_OUT_OF_STOCK);
+
+        this.stock -= quantity;
     }
 
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public int getStock() {
-        return stock;
+    //재고 복원
+    public void increaseStock(Long quantity) {
+        if (quantity <= 0) throw new ApiException(INVALID_RESTORE_AMOUNT);
+        this.stock += quantity;
     }
 }

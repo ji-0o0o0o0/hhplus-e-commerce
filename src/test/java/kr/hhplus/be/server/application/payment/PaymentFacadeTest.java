@@ -1,11 +1,9 @@
-package kr.hhplus.be.server.application.pay;
+package kr.hhplus.be.server.application.payment;
 
-import kr.hhplus.be.server.application.pay.PayCommand;
-import kr.hhplus.be.server.application.pay.PayFacade;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.pay.PayService;
+import kr.hhplus.be.server.domain.paymant.PaymentService;
 import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,20 +13,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PayFacadeTest {
+class PaymentFacadeTest {
 
     private OrderService orderService;
     private PointService pointService;
-    private PayService payService;
-    private PayFacade payFacade;
+    private PaymentService paymentService;
+    private PaymentFacade paymentFacade;
 
     @BeforeEach
     void setUp() {
         orderService = mock(OrderService.class);
         pointService = mock(PointService.class);
-        payService = mock(PayService.class);
+        paymentService = mock(PaymentService.class);
 
-        payFacade = new PayFacade(orderService, pointService, payService);
+        paymentFacade = new PaymentFacade(orderService, pointService, paymentService);
     }
 
     @Test
@@ -47,11 +45,11 @@ class PayFacadeTest {
         Point point = new Point(1L,  200_000);
         when(pointService.getOrCreatePoint(userId)).thenReturn(point);
 
-        payFacade.pay(new PayCommand(orderId));
+        paymentFacade.pay(new PaymentCommand(orderId));
 
         verify(pointService).use(userId, amount);
         verify(orderService).markPaid(orderId);
-        verify(payService).sendOrderData(order);
+        verify(paymentService).sendOrderData(order);
     }
 
 
@@ -72,9 +70,9 @@ class PayFacadeTest {
         Point point = new Point(2L, 50_000);
         when(pointService.getOrCreatePoint(userId)).thenReturn(point);
 
-        PayCommand command = new PayCommand(orderId);
+        PaymentCommand command = new PaymentCommand(orderId);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> payFacade.pay(command));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> paymentFacade.pay(command));
         assertEquals("포인트 잔액이 부족합니다.", ex.getMessage());
     }
 
@@ -91,9 +89,9 @@ class PayFacadeTest {
         when(order.getOrderStatus()).thenReturn(OrderStatus.CANCEL);
         when(orderService.getOrder(orderId)).thenReturn(order);
 
-        PayCommand command = new PayCommand(orderId);
+        PaymentCommand command = new PaymentCommand(orderId);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> payFacade.pay(command));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> paymentFacade.pay(command));
         assertEquals("주문 상태가 결제 대기 상태가 아닙니다.", ex.getMessage());
     }
 }

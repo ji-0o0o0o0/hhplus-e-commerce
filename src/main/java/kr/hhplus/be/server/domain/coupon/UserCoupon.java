@@ -1,51 +1,54 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.common.exception.ApiException;
+import kr.hhplus.be.server.domain.user.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static kr.hhplus.be.server.common.exception.ErrorCode.COUPON_ALREADY_USED;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserCoupon {
-    private final Long id;
-    private final Long userId;
-    private final Long couponId;
-    private final LocalDateTime updatedAt;
+    private Long id;
+    private Long userId;
+    private Long couponId;
     private boolean isUsed;
     private Coupon coupon;
 
-    public UserCoupon(Long id, Long userId, Long couponId, LocalDateTime updatedAt,
-                      boolean isUsed,Coupon coupon) {
-        this.id = id;
-        this.userId = userId;
-        this.couponId = couponId;
-        this.updatedAt = updatedAt;
-        this.isUsed = isUsed;
-        this.coupon=coupon;
-    }
-    //사용여부
-    public void markAsUsed(boolean isUsed) {
-        this.isUsed = !isUsed;
+    private UserCoupon(User user, Coupon coupon) {
+        this.userId = user.getId();
+        this.couponId = coupon.getId();
+        this.isUsed = false;
+        this.coupon = coupon;
     }
 
-    public Long getId() {
-        return id;
+    //생성
+    public static UserCoupon create(User user, Coupon coupon) {
+        return new UserCoupon(user, coupon);
     }
 
-    public Long getUserId() {
-        return userId;
+    //쿠폰 사용여부
+    public boolean isAvailable() {
+        return !this.isUsed && !this.coupon.isExpired();
     }
 
-    public Long getCouponId() {
-        return couponId;
+    //쿠폰 사용
+    public void markAsUsed() {
+        if(this.isUsed) throw new ApiException(COUPON_ALREADY_USED);
+        this.isUsed = true;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    //쿠폰 복원
+    public void rollback() {
+        this.isUsed = false;
     }
 
-    public boolean getIsUsed() {
-        return isUsed;
-    }
-
-    public Coupon getCoupon() {
-        return coupon;
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
     }
 }

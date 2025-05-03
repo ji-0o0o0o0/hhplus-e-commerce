@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.application.point;
 
 
-import kr.hhplus.be.server.domain.pay.PayRepository;
-import kr.hhplus.be.server.domain.pay.PayService;
+import kr.hhplus.be.server.domain.paymant.PaymentRepository;
+import kr.hhplus.be.server.domain.paymant.PaymentService;
 import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.PointService;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,7 @@ public class PointConfig {
         return new PointService(pointRepository);
     }
     @Bean
-    public PayService payService(PayRepository payRepository) {
-        return new PayService(payRepository);
+    public PaymentService payService(PaymentRepository paymentRepository) {
+        return new PaymentService(paymentRepository);
     }
 }

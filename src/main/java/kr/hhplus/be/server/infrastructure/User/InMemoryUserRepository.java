@@ -8,7 +8,7 @@ import java.util.Optional;
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     @Override
-    public Optional<User> findById(Long UserId) {
-        return Optional.empty();
+    public User findById(Long UserId) {
+        return null;
     }
 }

@@ -70,9 +70,9 @@ class OrderFacadeTest {
 
         // Act
         OrderItemCommand item = new OrderItemCommand(productId, quantity);
-        CreateOrderCommand command = new CreateOrderCommand(userId, null, List.of(item));
+        OrderCommand command = new OrderCommand(userId, null, List.of(item));
 
-        CreateOrderResult result = orderFacade.createOrder(command);
+        OrderResult result = orderFacade.createOrder(command);
 
         // Assert
         assertEquals(Long.valueOf(999L), result.orderId());
@@ -91,10 +91,10 @@ class OrderFacadeTest {
         mockOrderServiceReturnsOrderId(1001L);
 
         // Act
-        CreateOrderCommand command = new CreateOrderCommand(userId, null,
+        OrderCommand command = new OrderCommand(userId, null,
                 List.of(new OrderItemCommand(1L, 1), new OrderItemCommand(2L, 2)));
 
-        CreateOrderResult result = orderFacade.createOrder(command);
+        OrderResult result = orderFacade.createOrder(command);
 
         // Assert
         assertEquals(Long.valueOf(1001L), result.orderId());
@@ -136,7 +136,7 @@ class OrderFacadeTest {
 
         // Act
         OrderItemCommand item = new OrderItemCommand(productId, quantity);
-        CreateOrderCommand command = new CreateOrderCommand(userId, userCouponId, List.of(item));
+        OrderCommand command = new OrderCommand(userId, userCouponId, List.of(item));
         orderFacade.createOrder(command);
 
         // Assert
@@ -178,7 +178,7 @@ class OrderFacadeTest {
 
         // Act
         OrderItemCommand item = new OrderItemCommand(productId, quantity);
-        CreateOrderCommand command = new CreateOrderCommand(userId, userCouponId, List.of(item));
+        OrderCommand command = new OrderCommand(userId, userCouponId, List.of(item));
         orderFacade.createOrder(command);
 
         // Assert
@@ -221,7 +221,7 @@ class OrderFacadeTest {
 
         // Act
         OrderItemCommand item = new OrderItemCommand(productId, quantity);
-        CreateOrderCommand command = new CreateOrderCommand(userId, userCouponId, List.of(item));
+        OrderCommand command = new OrderCommand(userId, userCouponId, List.of(item));
         orderFacade.createOrder(command);
 
         // Assert
@@ -241,7 +241,7 @@ class OrderFacadeTest {
         when(productService.getProductById(productId)).thenReturn(product);
 
         OrderItemCommand item = new OrderItemCommand(productId, 2);
-        CreateOrderCommand command = new CreateOrderCommand(userId, null, List.of(item));
+        OrderCommand command = new OrderCommand(userId, null, List.of(item));
 
         // Act + Assert
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));
@@ -259,7 +259,7 @@ class OrderFacadeTest {
         when(productService.getProductById(2L)).thenThrow(new IllegalArgumentException("상품 없음"));
 
         // Act + Assert
-        CreateOrderCommand command = new CreateOrderCommand(userId, null,
+        OrderCommand command = new OrderCommand(userId, null,
                 List.of(new OrderItemCommand(1L, 1), new OrderItemCommand(2L, 1)));
 
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));
@@ -274,7 +274,7 @@ class OrderFacadeTest {
         long productId = 100L;
         when(userService.getUserById(userId)).thenThrow(new IllegalArgumentException("사용자 없음"));
         OrderItemCommand item = new OrderItemCommand(productId, 1);
-        CreateOrderCommand command = new CreateOrderCommand(userId, null, List.of(item));
+        OrderCommand command = new OrderCommand(userId, null, List.of(item));
 
         // Assert
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));
@@ -293,7 +293,7 @@ class OrderFacadeTest {
         when(userService.getUserById(userId)).thenReturn(null);
         when(userCouponService.getValidUserCoupon(userId, couponId)).thenThrow(new IllegalArgumentException("소유권 없음"));
 
-        CreateOrderCommand command = new CreateOrderCommand(userId, couponId, List.of(new OrderItemCommand(productId, 1)));
+        OrderCommand command = new OrderCommand(userId, couponId, List.of(new OrderItemCommand(productId, 1)));
 
         // Assert
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));
@@ -319,7 +319,7 @@ class OrderFacadeTest {
         when(couponService.getValidCoupon(eq(couponEntityId), any(LocalDate.class)))
                 .thenThrow(new IllegalArgumentException("유효하지 않은 쿠폰"));
 
-        CreateOrderCommand command = new CreateOrderCommand(userId, couponId, List.of(new OrderItemCommand(productId, 1)));
+        OrderCommand command = new OrderCommand(userId, couponId, List.of(new OrderItemCommand(productId, 1)));
 
         // Assert
         assertThrows(IllegalArgumentException.class, () -> orderFacade.createOrder(command));

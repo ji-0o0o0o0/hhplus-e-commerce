@@ -2,13 +2,16 @@ package kr.hhplus.be.server.domain.point;
 
 import kr.hhplus.be.server.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static kr.hhplus.be.server.common.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
+@Service
 public class PointService {
 
     private final PointRepository pointRepository;
@@ -18,9 +21,6 @@ public class PointService {
      * @param userId
      * @return 포인트 잔액 정보
      * @exception ApiException 등록되지 않은 유저일 경우 예외 발생
-     */
-    /**
-     * 사용자 포인트 조회
      */
     public Point findPointByUserId(long userId) {
         return pointRepository.findPointByUserId(userId)
@@ -32,7 +32,7 @@ public class PointService {
     }
 
     //포인트 충전
-    public PointInfo.Increase increase(long userId,long amount){
+    public PointInfo.Increase increase(long userId,BigDecimal amount){
         //0. 사용자 포인트 조회
         Point point =findPointByUserId(userId);
        //1. 도메인에서  유효성 검증 및 충전
@@ -45,7 +45,7 @@ public class PointService {
         return PointInfo.Increase.from(point);
     }
     //포인트 차감
-    public PointInfo.Decrease decrease(long userId,long amount){
+    public PointInfo.Decrease decrease(long userId, BigDecimal amount){
         //0. 사용자 포인트 조회
         Point point =findPointByUserId(userId);
         //1. 도메인에서  유효성 검증 및 사용

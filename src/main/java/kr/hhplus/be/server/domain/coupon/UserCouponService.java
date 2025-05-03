@@ -3,8 +3,10 @@ package kr.hhplus.be.server.domain.coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Service
 public class UserCouponService {
 
     private final UserCouponRepository userCouponRepository;

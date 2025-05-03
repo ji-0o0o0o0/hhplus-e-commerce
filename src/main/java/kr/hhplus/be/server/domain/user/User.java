@@ -1,12 +1,17 @@
 package kr.hhplus.be.server.domain.user;
 
-public class User {
-    private final Long userId;
+import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-    public User (Long id) {
-        if ( id <= 0) throw new IllegalArgumentException("유효하지 않은 유저 아이디입니다.");
-        this.userId = id;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends AuditableEntity {
+    /*유저 아이디*/
+    private Long id;
+    public static User of() {
+        return new User();
     }
-
-    public Long getUserId() { return userId; }
 }

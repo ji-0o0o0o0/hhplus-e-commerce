@@ -33,7 +33,9 @@ public enum ErrorCode {
 
 
     // 4️-2 결제 처리
-    INVALID_ORDER_ID("INVALID_ORDER_ID", 400, "유효하지 않은 주문 ID입니다."),
+    INVALID_ORDER("INVALID_ORDER_ID", 400, "유효하지 않은 주문 입니다."),
+    INVALID_ORDER_USER("INVALID_ORDER_USER", 400, "주문과 주문자 정보와 일치하지 않습니다."),
+    INVALID_ORDER_PRODUCT("INVALID_ORDER_PRODUCT", 400, "주문할 상품이 없습니다."),
     ORDER_NOT_FOUND("ORDER_NOT_FOUND", 404, "주문을 찾을 수 없습니다."),
     INVALID_ORDER_STATUS("INVALID_ORDER_STATUS", 409, "결제가 불가능한 주문 상태입니다."),
     POINT_NOT_ENOUGH("POINT_NOT_ENOUGH", 409, "포인트가 부족합니다."),

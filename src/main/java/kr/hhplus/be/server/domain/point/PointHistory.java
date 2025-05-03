@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,11 +13,11 @@ public class PointHistory extends AuditableEntity {
     private Long id;
     private Long pointId;
     private Long userId;
-    private Long amount;
-    private Long balance;
+    private BigDecimal amount;
+    private BigDecimal balance;
     private PointUseStatus  type;
 
-    public PointHistory(Long pointId,Long userId, Long amount, Long balance, PointUseStatus type) {
+    public PointHistory(Long pointId,Long userId, BigDecimal amount, BigDecimal balance, PointUseStatus type) {
         this.pointId = pointId;
         this.userId = userId;
         this.amount = amount;
@@ -26,7 +26,7 @@ public class PointHistory extends AuditableEntity {
     }
 
     /*포인트 사용 이력 저장*/
-    public static PointHistory saveHistory(Point point, Long amount,PointUseStatus type){
+    public static PointHistory saveHistory(Point point, BigDecimal amount, PointUseStatus type){
         return new PointHistory(point.getId(),point.getUserId(), amount,point.getBalance(),type);
     }
 }

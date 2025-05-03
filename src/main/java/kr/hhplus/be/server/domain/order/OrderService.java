@@ -1,31 +1,39 @@
 package kr.hhplus.be.server.domain.order;
 
 
-import kr.hhplus.be.server.domain.coupon.UserCouponService;
+import kr.hhplus.be.server.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import static kr.hhplus.be.server.common.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
+@Service
 public class OrderService {
-
     private final OrderRepository orderRepository;
-    private final UserCouponService userCouponService;
+    private final OrderExternalClient orderExternalClient;
 
-    public Order createOrder(Order order) {
-        if (order.getUserCouponId() != null) {
-            //쿠폰 사용 업데이트
-            userCouponService.markAsUsed(order.getUserCouponId(),true);
-        }
+    //주문 생성
+    public Order order(Order order){
+        if(order.getOrderItems().isEmpty()) throw new ApiException(INVALID_ORDER_PRODUCT);
         return orderRepository.save(order);
     }
-
-    public Order getOrder(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
-    }
-
-    public void markPaid(Long orderId) {
-        Order order = getOrder(orderId);
+    //주문 결제 완료 처리
+    public void completeOrder(Order order){
         order.markPaid();
         orderRepository.save(order);
+        // 외부 플랫폼 데이터 전송
+        orderExternalClient.sendOrder(order);
+    }
+
+    //주문 만료 처리
+    public void expireOrder(Order order){
+        order.markExpired();
+        orderRepository.save(order);
+    }
+    //주문 id로 주문 조회
+    public Order getOrder(Long orderId) {
+        return orderRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new ApiException(INVALID_ORDER));
     }
 }

@@ -3,6 +3,8 @@ package kr.hhplus.be.server.application.point;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.math.BigDecimal;
+
 public class PointCommand {
 
     public record UserIdRequest(
@@ -18,7 +20,7 @@ public class PointCommand {
 
             @NotNull(message = "amount는 필수입니다.")
             @Positive(message = "amount는 0보다 커야 합니다.")
-            long amount
+            BigDecimal amount
     ) {}
 
     public record DecreaseRequest(
@@ -28,6 +30,6 @@ public class PointCommand {
 
             @NotNull(message = "amount는 필수입니다.")
             @Positive(message = "amount는 0보다 커야 합니다.")
-            long amount
+            BigDecimal amount
     ) {}
 }

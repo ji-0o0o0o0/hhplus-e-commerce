@@ -6,13 +6,14 @@ import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointService;
 import kr.hhplus.be.server.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-@Service
+@Component
 public class PointFacade {
 
     private final PointService pointService;

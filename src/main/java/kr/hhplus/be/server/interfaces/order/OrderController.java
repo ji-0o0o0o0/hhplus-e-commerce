@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.interfaces.order;
 
-import kr.hhplus.be.server.application.order.CreateOrderCommand;
-import kr.hhplus.be.server.application.order.CreateOrderResult;
-import kr.hhplus.be.server.application.order.OrderUseCase;
+import kr.hhplus.be.server.application.order.OrderCommand;
+import kr.hhplus.be.server.application.order.OrderFacade;
+import kr.hhplus.be.server.application.order.OrderResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/orders")
 public class OrderController {
 
-    private final OrderUseCase orderUseCase;
+    private final OrderFacade orderFacade;
 
     @PostMapping
     public ResponseEntity<OrderResponse> create(@RequestBody OrderRequest request) {
-        CreateOrderCommand command = request.toCommand();
-        CreateOrderResult result = orderUseCase.createOrder(command);
+        OrderCommand command = request.toCommand();
+        OrderResult result = orderFacade.order(command);
         return ResponseEntity.ok(OrderResponse.from(result));
     }
 }

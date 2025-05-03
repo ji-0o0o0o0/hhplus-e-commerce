@@ -1,39 +1,44 @@
 package kr.hhplus.be.server.domain.order;
 
-public class OrderItem {
+import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
+import kr.hhplus.be.server.domain.product.Product;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class OrderItem extends AuditableEntity {
     //상품id, 가격, 수량
     //가격 * 수량 책임
 
+    private Long id;
+    private Long orderId;
     private Long productId;
-    private int price;
-    private int quantity;
+    private String productName;
+    private BigDecimal price;
+    private Long quantity;
 
-    public OrderItem(Long productId, int price, int quantity) {
-        //가격 * 수량 책임
-        // 가격 0 미만일 경우 에러
-        if(price < 0) throw new IllegalArgumentException("가격은 0원 이상이어야합니다.");
-        // 수량 1개 이상
-        if(quantity < 1) throw new IllegalArgumentException("수량은 1개 이상이어야합니다.");
-
+    public OrderItem(Long orderId, Long productId, String productName, BigDecimal price, Long quantity) {
+        this.orderId = orderId;
         this.productId = productId;
+        this.productName = productName;
         this.price = price;
         this.quantity = quantity;
     }
 
+    public static OrderItem create(Product product, Long quantity) {
+        return new OrderItem(null,product.getId(), product.getName(), product.getPrice(), quantity);
+    }
+
     // 갯수에 따른 제품 가격
-    public int calculateAmount(){
-        return price * quantity;
+    public BigDecimal calculateAmount(){
+        return this.price.multiply(BigDecimal.valueOf(this.quantity));
     }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public int getQuantity() {
-        return quantity;
+    //제고 복원
+    public void restoreStock(Product product) {
+        product.increaseStock(this.quantity);
     }
 }

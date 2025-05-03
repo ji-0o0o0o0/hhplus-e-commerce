@@ -5,5 +5,5 @@ import kr.hhplus.be.server.domain.product.Product;
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<User> findById(Long UserId);
+    User findById(Long userId);
 }

@@ -16,7 +16,7 @@ public class InMemoryOrderRepository implements OrderRepository {
     }
 
     @Override
-    public Optional<Order> findById(Long orderId) {
+    public Optional<Order> findByOrderId(Long orderId) {
         return Optional.empty();
     }
 

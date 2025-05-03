@@ -1,7 +1,7 @@
-package kr.hhplus.be.server.domain.pay;
+package kr.hhplus.be.server.domain.paymant;
 
 import kr.hhplus.be.server.domain.order.Order;
 
-public interface PayRepository {
+public interface PaymentRepository {
      void extSave(Order order);
 }
