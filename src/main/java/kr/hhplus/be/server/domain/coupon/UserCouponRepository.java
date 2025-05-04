@@ -1,10 +1,17 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserCouponRepository {
 
-    Optional<UserCoupon> findByUserIdAndUserCouponId(Long userId, Long userCouponId);
+    Optional<UserCoupon> findById(Long id);
 
-    void updateIsUsed(Long userCouponId, boolean isUsed);
+    boolean existsByUserIdAndCouponId(Long userId, Long couponId);
+
+    List<UserCoupon> findAllByUserId(Long userId);
+
+    void save(UserCoupon userCoupon);
+
+    Optional<UserCoupon> findCouponByUserIdAndCouponId(Long id, Long couponId);
 }
