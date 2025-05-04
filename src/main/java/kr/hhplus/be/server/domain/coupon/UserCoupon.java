@@ -47,8 +47,4 @@ public class UserCoupon {
     public void rollback() {
         this.isUsed = false;
     }
-
-    public void setCoupon(Coupon coupon) {
-        this.coupon = coupon;
-    }
 }
