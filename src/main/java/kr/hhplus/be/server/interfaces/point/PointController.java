@@ -26,9 +26,9 @@ public class PointController {
     }
     //포인트 충전
     @PostMapping("/charge")
-    public PointResponse.Charge chargePoint(PointRequest.Charge request){
+    public ResponseEntity <PointResponse.Charge> chargePoint(@RequestBody PointRequest.Charge request){
         PointResult.Charge charge = pointFacade.charge(new PointCommand.IncreaseRequest(request.userId(), request.amount()));
-        return PointResponse.Charge.from(charge);
+        return ResponseEntity.ok(PointResponse.Charge.from(charge));
     }
     //포인트 내역 조회
     // 포인트 내역 조회

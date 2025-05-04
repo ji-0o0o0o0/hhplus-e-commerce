@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,7 +17,7 @@ public final class PointResult {
     @Builder
     public static class UserPoint {
         private long userId;
-        private long balance;
+        private BigDecimal balance;
 
         public static UserPoint from(PointInfo.Balance info) {
             return UserPoint.builder()
@@ -31,7 +32,7 @@ public final class PointResult {
     public static class Charge {
         private long pointId;
         private long userId;
-        private long balance;
+        private BigDecimal balance;
         private LocalDateTime createdAt;
         private LocalDateTime lastModifiedAt;
 
@@ -51,8 +52,8 @@ public final class PointResult {
     public static class History {
         private long pointHistoryId;
         private long userId;
-        private long amount;
-        private long balance;
+        private BigDecimal amount;
+        private BigDecimal balance;
         private PointUseStatus type;
         private LocalDateTime createdAt;
 

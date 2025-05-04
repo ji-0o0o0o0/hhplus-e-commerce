@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.domain.point;
 
-import jakarta.persistence.Access;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
@@ -20,7 +20,7 @@ public final class PointInfo {
     public static class Balance{
         private long pointId;
         private long userId;
-        private long balance;
+        private BigDecimal balance;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -41,7 +41,7 @@ public final class PointInfo {
     public static class Increase{
         private long pointId;
         private long userId;
-        private long balance;
+        private BigDecimal balance;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -62,7 +62,7 @@ public final class PointInfo {
     public static class Decrease{
         private long pointId;
         private long userId;
-        private long balance;
+        private BigDecimal balance;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
 
@@ -83,8 +83,8 @@ public final class PointInfo {
         private long pointHistoryId;
         private long pointId;
         private long userId;
-        private long amount;
-        private long balance;
+        private BigDecimal amount;
+        private BigDecimal balance;
         private PointUseStatus type;
         private LocalDateTime createdAt;
 

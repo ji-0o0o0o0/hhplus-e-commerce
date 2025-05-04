@@ -31,7 +31,7 @@ public class PointFacade {
 
     //포인트 이력 조회
     public List<PointResult.History> getPointHistory(PointCommand.UserIdRequest command){
-        List<PointInfo.History> pointHistory = pointService.getPonintHistories(command.userId());
+        List<PointInfo.History> pointHistory = pointService.getPointHistories(command.userId());
 
         return pointHistory.stream()
                 .map(PointResult.History::from)

@@ -58,7 +58,7 @@ public class PointService {
         return PointInfo.Decrease.from(point);
     }
     //사용자의 포인트 사용/충전 이력 조회
-    public List<PointInfo.History> getPonintHistories(long userId){
+    public List<PointInfo.History> getPointHistories(long userId){
         List<PointHistory> histories = pointRepository.findPointHistoryByUserId(userId);
 
         return histories.stream()
