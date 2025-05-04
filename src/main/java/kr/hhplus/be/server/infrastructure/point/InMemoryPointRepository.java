@@ -9,21 +9,24 @@ import java.util.*;
 
 @Repository
 public class InMemoryPointRepository implements PointRepository {
-    private final Map<Long, Point> pointStore = new HashMap<>();
-    private final List<PointHistory> histories = new ArrayList<>();
 
     @Override
-    public Optional<Point> findByUserId(Long userId) {
-        return Optional.ofNullable(pointStore.get(userId));
+    public Optional<Point> findPointByUserId(Long userId) {
+        return Optional.empty();
     }
 
     @Override
-    public void save(Point point) {
-        pointStore.put(point.getUserId(), point);
+    public List<PointHistory> findPointHistoryByUserId(Long userId) {
+        return null;
     }
 
     @Override
-    public void saveHistory(PointHistory history) {
-        histories.add(history);
+    public Point savePoint(Point point) {
+        return null;
+    }
+
+    @Override
+    public PointHistory savePointHistory(PointHistory pointHistory) {
+        return null;
     }
 }

@@ -36,11 +36,11 @@ public class PointService {
         //0. 사용자 포인트 조회
         Point point =findPointByUserId(userId);
        //1. 도메인에서  유효성 검증 및 충전
-        point.increase(amount);
+        PointHistory chargeHistory = point.charge(amount);
         //2. 포인트 변화 저장
         pointRepository.savePoint(point);
         //3, 이력 저장
-        pointRepository.savePointHistory(PointHistory.saveHistory(point,amount,PointUseStatus.CHARGE));
+        pointRepository.savePointHistory(chargeHistory);
 
         return PointInfo.Increase.from(point);
     }
@@ -49,11 +49,11 @@ public class PointService {
         //0. 사용자 포인트 조회
         Point point =findPointByUserId(userId);
         //1. 도메인에서  유효성 검증 및 사용
-        point.decrease(amount);
+        PointHistory useHistory = point.use(amount);
         //2. 포인트 변화 저장
         pointRepository.savePoint(point);
         //3, 이력 저장
-        pointRepository.savePointHistory(PointHistory.saveHistory(point,amount,PointUseStatus.USE));
+        pointRepository.savePointHistory(useHistory);
 
         return PointInfo.Decrease.from(point);
     }

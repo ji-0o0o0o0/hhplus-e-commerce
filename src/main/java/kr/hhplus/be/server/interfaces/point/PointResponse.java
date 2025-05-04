@@ -3,12 +3,13 @@ package kr.hhplus.be.server.interfaces.point;
 import kr.hhplus.be.server.application.point.PointResult;
 import kr.hhplus.be.server.domain.point.PointUseStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record PointResponse() {
     public record UserPoint(
             long userId,
-            long balance
+            BigDecimal balance
 
     ) {
         public static UserPoint from(PointResult.UserPoint pointResult) {
@@ -21,7 +22,7 @@ public record PointResponse() {
     public record Charge(
             long id,
             long userId,
-            long balance,
+            BigDecimal balance,
             LocalDateTime createdAt,
             LocalDateTime lastModifiedAt
     ) {
@@ -38,8 +39,8 @@ public record PointResponse() {
     public record History(
             long pointHistoryId,
             long userId,
-            long amount,
-            long balance,
+            BigDecimal amount,
+            BigDecimal balance,
             PointUseStatus type,
             LocalDateTime createdAt
     ) {

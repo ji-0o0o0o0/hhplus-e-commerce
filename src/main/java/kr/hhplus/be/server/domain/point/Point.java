@@ -59,6 +59,16 @@ public class Point extends AuditableEntity {
         this.balance = this.balance.subtract(amount);
     }
 
+    public PointHistory charge(BigDecimal amount) {
+        increase(amount);
+        return PointHistory.saveHistory(this, amount, PointUseStatus.CHARGE);
+    }
+
+    public PointHistory use(BigDecimal amount) {
+        decrease(amount);
+        return PointHistory.saveHistory(this, amount, PointUseStatus.USE);
+    }
+
 
 }
 

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static kr.hhplus.be.server.common.exception.ErrorCode.COUPON_ALREADY_USED;
+import static kr.hhplus.be.server.common.exception.ErrorCode.INVALID_COUPON;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,6 +35,8 @@ public class UserCoupon {
 
     //쿠폰 사용여부
     public boolean isAvailable() {
+        if(this.isUsed) throw new ApiException(COUPON_ALREADY_USED);
+        if (coupon.isExpired()) throw new ApiException(INVALID_COUPON);
         return !this.isUsed && !this.coupon.isExpired();
     }
 
