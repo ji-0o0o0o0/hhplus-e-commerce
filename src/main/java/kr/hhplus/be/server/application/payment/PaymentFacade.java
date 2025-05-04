@@ -24,7 +24,7 @@ public class PaymentFacade {
 
     public PaymentResult pay(PaymentCommand command) {
         // 1. 주문 조회
-        Order order = orderService.getOrder(command.orderId());
+        Order order = orderService.getOrderById(command.orderId());
         if(!order.getUserId().equals(command.userId())) throw new ApiException(INVALID_ORDER_USER);
 
         //2. 포인트 사용
