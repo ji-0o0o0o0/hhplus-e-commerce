@@ -3,16 +3,18 @@ package kr.hhplus.be.server.application.product;
 
 import kr.hhplus.be.server.domain.product.Product;
 
+import java.math.BigDecimal;
+
 public record ProductResult(
         Long id,
         String name,
-        int price,
-        int stock
+        BigDecimal price,
+        Long stock
 ) {
     public static ProductResult from(Product product) {
         return new ProductResult(
-                product.getProductId(),
-                product.getProductName(),
+                product.getId(),
+                product.getName(),
                 product.getPrice(),
                 product.getStock()
         );

@@ -24,7 +24,7 @@ public class Product extends AuditableEntity {
     public Product(String name,String description, BigDecimal price, Long   stock) {
         if (name == null || name.isBlank()) throw new ApiException(INVALID_PRODUCT_ID);
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) throw new ApiException(INVALID_PRODUCT_ID);
-        if (stock == null || stock < 0) throw new ApiException(PRODUCT_OUT_OF_STOCK);
+        //if (stock == null || stock < 0) throw new ApiException(PRODUCT_OUT_OF_STOCK);
 
         this.name = name;
         this.description = description;
