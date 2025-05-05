@@ -3,12 +3,10 @@ package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.common.exception.ApiException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static kr.hhplus.be.server.common.exception.ErrorCode.*;
-import static kr.hhplus.be.server.lagacy.point.docs.PointSwaggerDocs.INVALID_ORDER_ID;
 
 @RequiredArgsConstructor
 @Service
@@ -19,7 +17,7 @@ public class OrderService {
     //주문 생성
     @Transactional
     public Order order(Order order) {
-        if (order.getOrderItems().isEmpty()) {
+        if (order.getOrderProducts().isEmpty()) {
             throw new ApiException(INVALID_ORDER);
         }
         return orderRepository.save(order);

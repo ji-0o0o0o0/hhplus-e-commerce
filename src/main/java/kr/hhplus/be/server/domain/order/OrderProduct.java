@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.common.exception.ApiException;
+import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
 import kr.hhplus.be.server.domain.product.Product;
 import lombok.AccessLevel;
@@ -10,7 +12,7 @@ import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderItem extends AuditableEntity {
+public class OrderProduct extends AuditableEntity {
     //상품id, 가격, 수량
     //가격 * 수량 책임
 
@@ -21,7 +23,7 @@ public class OrderItem extends AuditableEntity {
     private BigDecimal price;
     private Long quantity;
 
-    public OrderItem(Long orderId, Long productId, String productName, BigDecimal price, Long quantity) {
+    public OrderProduct(Long orderId, Long productId, String productName, BigDecimal price, Long quantity) {
         this.orderId = orderId;
         this.productId = productId;
         this.productName = productName;
@@ -29,8 +31,9 @@ public class OrderItem extends AuditableEntity {
         this.quantity = quantity;
     }
 
-    public static OrderItem create(Product product, Long quantity) {
-        return new OrderItem(null,product.getId(), product.getName(), product.getPrice(), quantity);
+    public static OrderProduct create(Product product, Long quantity) {
+        if(quantity<=0) throw new ApiException(ErrorCode.INVALID_ORDER_PRODUCT);
+        return new OrderProduct(null,product.getId(), product.getName(), product.getPrice(), quantity);
     }
 
     // 갯수에 따른 제품 가격
