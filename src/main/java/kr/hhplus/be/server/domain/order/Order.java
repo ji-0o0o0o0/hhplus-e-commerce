@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
@@ -16,16 +17,21 @@ import java.util.List;
 import static kr.hhplus.be.server.common.exception.ErrorCode.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "orders")
+@Entity
 public class Order extends AuditableEntity {
     //Long	DB에서 PK로 자주 쓰이고, null 가능성이 있음
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private Long userCouponId;//null가능
     private boolean isCouponApplied;
     private BigDecimal totalAmount;
     private BigDecimal discountedAmount;
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
+    @Transient
     private final List<OrderProduct> orderProducts = new ArrayList<>();
     //-> 초기화 안전성 때문(생성자 호출 전에 orderItems는 무조건 비어 있는 리스트로 초기화)
     //바로 안전하게 사용할 수 있음. (NPE 방지)

@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
@@ -12,10 +13,13 @@ import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "order_product")
+@Entity
 public class OrderProduct extends AuditableEntity {
     //상품id, 가격, 수량
     //가격 * 수량 책임
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderId;
     private Long productId;
