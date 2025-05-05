@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.product;
+package kr.hhplus.be.server.domain.product;
 
 
 import kr.hhplus.be.server.common.exception.ApiException;
