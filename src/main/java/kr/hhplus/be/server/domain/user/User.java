@@ -14,4 +14,5 @@ public class User extends AuditableEntity {
     public static User of() {
         return new User();
     }
+    public static User create(Long id){User user=new User(); user.id=id; return user;}
 }

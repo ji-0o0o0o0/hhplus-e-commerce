@@ -1,17 +1,11 @@
 package kr.hhplus.be.server.application.payment;
 
-import kr.hhplus.be.server.application.order.OrderResult;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderService;
-import kr.hhplus.be.server.domain.order.OrderStatus;
-import kr.hhplus.be.server.domain.paymant.PaymentService;
-import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointService;
-import kr.hhplus.be.server.domain.point.PointUseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import static kr.hhplus.be.server.common.exception.ErrorCode.INVALID_ORDER_USER;
 

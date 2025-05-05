@@ -7,8 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public class InMemoryUserRepository implements UserRepository {
+
     @Override
-    public User findById(Long UserId) {
-        return null;
+    public Optional<User> findById(Long userId) {
+        return Optional.empty();
     }
 }

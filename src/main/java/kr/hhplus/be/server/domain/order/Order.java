@@ -59,20 +59,19 @@ public class Order extends AuditableEntity {
     }
 
     public void applyCoupon(UserCoupon userCoupon){
-        if(this.isCouponApplied) throw new ApiException(COUPON_ALREADY_USED);
-        if (!userCoupon.isAvailable()) throw new ApiException(INVALID_COUPON);
+        userCoupon.isAvailable();
 
-        this.userCouponId = userCoupon.getId();
-        this.discountedAmount = this.totalAmount.subtract(userCoupon.getCoupon().getDiscountAmount(this.totalAmount));
+        this.userCouponId = userCoupon.getCouponId();
+        this.totalAmount = this.totalAmount.subtract(userCoupon.getCoupon().getDiscountAmount(this.totalAmount));
         this.isCouponApplied = true;
         userCoupon.markAsUsed();
     }
 
     //쿠폰 적용
     //최종금액
-    public BigDecimal getPayableAmount() {
+    /*public BigDecimal getPayableAmount() {
         return isCouponApplied ? discountedAmount : totalAmount;
-    }
+    }*/
     public void markPaid(){
         //결제 상태확인
         if(this.status!=OrderStatus.NOT_PAID)throw new ApiException(INVALID_ORDER_STATUS);

@@ -1,59 +1,194 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.common.exception.ApiException;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.DiscountType;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class OrderTest {
-
+public class OrderTest {
     @Test
-    @DisplayName("쿠폰 없이 총 금액 계산 테스트")
-    void calculateTotalAmount_withoutCoupon() {
+    @DisplayName("정상적인 사용자로 주문 생성성공")
+    void createOrder_withValidUser_success(){
         // Arrange
-        List<OrderItem> items = List.of(new OrderItem(1L, 1000, 2));
-        Order order = new Order(1L, items, null, null);
+        //유저 생성
+        User user = User.create(1L);
+        //Act
+        //주문 생성
+        Order order = Order.create(user);
 
-        // Act + Assert
-        assertEquals(2000, order.getTotalAmount());
+        //Assert
+        //객체 생성 잘 되었는지
+        assertNotNull(order);
+        assertEquals(order.getUserId(),user.getId());
+        assertEquals(order.getStatus(),OrderStatus.NOT_PAID);
     }
 
     @Test
-    @DisplayName("RATE 쿠폰 적용 시 총 금액 할인 테스트")
-    void calculateTotalAmount_withRateCoupon() {
-        List<OrderItem> items = List.of(new OrderItem(1L, 1000, 2)); // 2000원
-        Order order = new Order(1L, items, 99L, Map.of("RATE", 10.0)); // 10% 할인
-
-        assertEquals(1800, order.getTotalAmount());
+    @DisplayName("null 사용자로 주문 생성 시 예외 발생")
+    void createUser_withNullUser_throwsException(){
+        assertThrows(ApiException.class,()-> Order.create(null));
     }
 
     @Test
-    @DisplayName("AMOUNT 쿠폰 적용 시 총 금액 할인 테스트")
-    void calculateTotalAmount_withAmountCoupon() {
-        List<OrderItem> items = List.of(new OrderItem(1L, 1000, 2)); // 2000원
-        Order order = new Order(1L, items, 99L, Map.of("AMOUNT", 500.0)); // 500원 할인
+    @DisplayName("정상적으로 주문 잘 들어갔는지 확인")
+    void addOrderItem_success(){
+        //Arrange
+        User user = User.create(1L);
+        Product product = Product.create("상품1","상품1 설명", BigDecimal.valueOf(1000),2L);
+        Order order = Order.create(user);
 
-        assertEquals(1500, order.getTotalAmount());
+        //Act
+        order.addOrderItem(product,2L);
+
+        //Assert
+        //주문 1개
+        assertEquals(order.getOrderItems().size(),1);
+        //상품 가격 총 2천원
+        assertEquals(BigDecimal.valueOf(2000L),order.getTotalAmount());
     }
 
     @Test
-    @DisplayName("할인 값이 총 금액보다 클 경우 0원 처리")
-    void calculateTotalAmount_discountTooBig_returnsZero() {
-        List<OrderItem> items = List.of(new OrderItem(1L, 1000, 1)); // 1000원
-        Order order = new Order(1L, items, 99L, Map.of("AMOUNT", 2000.0)); // 2000원 할인
+    @DisplayName("주문 목록에 상품이 없으면 예외 발생")
+    void addOrderItem_withNullProduct_ThrowsException(){
+        User user = User.create(1L);
+        Order order = Order.create(user);
 
-        assertEquals(0, order.getTotalAmount());
+        assertThrows(ApiException.class,()->order.addOrderItem(null,2L));
     }
 
     @Test
-    @DisplayName("알 수 없는 쿠폰 타입이면 할인 없이 원금 유지")
-    void calculateTotalAmount_withUnknownCouponType_returnsOriginal() {
-        List<OrderItem> items = List.of(new OrderItem(1L, 1000, 1));
-        Order order = new Order(1L, items, 99L, Map.of("UNKNOWN", 50.0));
+    @DisplayName("재고가 없으면 예외 발생")
+    void addOrderItem_withOutOfStockProduct_ThrowsException(){
+        User user = User.create(1L);
+        Product product = Product.create("상품1","상품1 설명", BigDecimal.valueOf(1000),0L);
+        Order order = Order.create(user);
 
-        assertEquals(1000, order.getTotalAmount()); // 할인 없음
+        assertThrows(ApiException.class,()->order.addOrderItem(product,2L));
     }
+    @Test
+    @DisplayName("수량이 0보다 작으면 예외 발생")
+    void addOrderItem_withZeroQuantity_throwsException(){
+        User user = User.create(1L);
+        Product product = Product.create("상품1","상품1 설명", BigDecimal.valueOf(1000),2L);
+        Order order = Order.create(user);
+
+        assertThrows(ApiException.class,()->order.addOrderItem(product,0L));
+    }
+
+    @Test
+    @DisplayName("쿠폰적용")
+    void applyCoupon_success(){
+        //Arrange
+        User user = User.create(1L);
+        Coupon coupon = Coupon.of("10%할인",BigDecimal.valueOf(10L), DiscountType.RATE, LocalDate.now().minusDays(1),LocalDate.now(),2L);
+        UserCoupon userCoupon = UserCoupon.create(user,coupon);
+        Product product = Product.create("상품1","상품1 설명", BigDecimal.valueOf(1000),2L);
+        Order order = Order.create(user);
+        order.addOrderItem(product,2L);
+
+        //Act
+        order.applyCoupon(userCoupon);
+
+        //Assert
+        assertTrue(userCoupon.isUsed());
+        assertEquals(new BigDecimal(1800L),order.getTotalAmount());
+        assertEquals(order.getUserCouponId(),userCoupon.getCouponId());
+
+    }
+
+    @Test
+    @DisplayName("이미 사용한 쿠폰은 예외 발생")
+    void applyCoupon_withAlreadyUsed_throwsException(){
+        //Arrange
+        User user = User.create(1L);
+        Coupon coupon = Coupon.of("10%할인",BigDecimal.valueOf(10L), DiscountType.RATE, LocalDate.now().minusDays(1),LocalDate.now(),2L);
+        UserCoupon userCoupon = UserCoupon.create(user,coupon);
+        userCoupon.markAsUsed();
+        Product product = Product.create("상품1","상품1 설명", BigDecimal.valueOf(1000),2L);
+        Order order = Order.create(user);
+        order.addOrderItem(product,2L);
+
+        assertThrows(ApiException.class,()->order.applyCoupon(userCoupon));
+    }
+
+    @Test
+    @DisplayName("사용 기한이 지난 쿠폰은 예외 발생")
+    void applyCoupon_withExpired_throwsException(){
+        //Arrange
+        User user = User.create(1L);
+        Coupon coupon = Coupon.of("10%할인",BigDecimal.valueOf(10L), DiscountType.RATE, LocalDate.now().minusDays(3),LocalDate.now().minusDays(2),2L);
+        UserCoupon userCoupon = UserCoupon.create(user,coupon);
+        userCoupon.markAsUsed();
+        Product product = Product.create("상품1","상품1 설명", BigDecimal.valueOf(1000),2L);
+        Order order = Order.create(user);
+        order.addOrderItem(product,2L);
+
+        assertThrows(ApiException.class,()->order.applyCoupon(userCoupon));
+    }
+    @Test
+    @DisplayName("markPaid - NOT_PAID 상태일 경우 결제 상태로 변경")
+    void markPaid_fromNotPaid_success() {
+        Order order = Order.create(User.create(1L));
+
+        order.markPaid();
+
+        assertEquals(OrderStatus.PAID, order.getStatus());
+    }
+
+    @Test
+    @DisplayName("markPaid - 이미 결제된 주문은 예외 발생")
+    void markPaid_fromPaid_throwsException() {
+        Order order = Order.create(User.create(1L));
+        order.markPaid();
+
+        assertThrows(ApiException.class, order::markPaid);
+    }
+
+    @Test
+    @DisplayName("markExpired - NOT_PAID 상태일 경우 만료 처리")
+    void markExpired_fromNotPaid_success() {
+        Order order = Order.create(User.create(1L));
+
+        order.markExpired();
+
+        assertEquals(OrderStatus.EXPIRED, order.getStatus());
+    }
+
+    @Test
+    @DisplayName("markExpired - 이미 만료된 주문은 예외 발생")
+    void markExpired_fromExpired_throwsException() {
+        Order order = Order.create(User.create(1L));
+        order.markExpired();
+
+        assertThrows(ApiException.class, order::markExpired);
+    }
+
+    @Test
+    @DisplayName("markCanceled - NOT_PAID 상태일 경우 취소 처리")
+    void markCanceled_fromNotPaid_success() {
+        Order order = Order.create(User.create(1L));
+
+        order.markCanceled();
+
+        assertEquals(OrderStatus.CANCEL, order.getStatus());
+    }
+
+    @Test
+    @DisplayName("markCanceled - 이미 취소된 주문은 예외 발생")
+    void markCanceled_fromCanceled_throwsException() {
+        Order order = Order.create(User.create(1L));
+        order.markCanceled();
+
+        assertThrows(ApiException.class, order::markCanceled);
+    }
+
 }

@@ -10,13 +10,14 @@ import java.util.Optional;
 @Repository
 public class InMemoryProductRepository implements ProductRepository {
 
+
     @Override
     public Optional<Product> findById(Long productId) {
-        return Optional.of(new Product(productId, "테스트상품", 1000, 5));
+        return Optional.empty();
     }
 
     @Override
     public List<Product> findAll() {
-        return List.of();
+        return null;
     }
 }
