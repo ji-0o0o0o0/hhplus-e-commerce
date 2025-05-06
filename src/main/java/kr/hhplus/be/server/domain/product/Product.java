@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.product;
 
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
 import lombok.AccessLevel;
@@ -13,8 +14,12 @@ import static kr.hhplus.be.server.common.exception.ErrorCode.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "product")
+@Entity
 public class Product extends AuditableEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;

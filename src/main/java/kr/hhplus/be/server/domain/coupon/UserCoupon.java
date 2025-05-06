@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.domain.user.User;
 import lombok.AccessLevel;
@@ -14,11 +15,16 @@ import static kr.hhplus.be.server.common.exception.ErrorCode.INVALID_COUPON;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "user_coupon")
+@Entity
 public class UserCoupon {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private Long couponId;
     private boolean isUsed;
+    @Transient
     private Coupon coupon;
 
     private UserCoupon(User user, Coupon coupon) {

@@ -51,7 +51,7 @@ public class OrderTest {
 
         //Assert
         //주문 1개
-        assertEquals(order.getOrderItems().size(),1);
+        assertEquals(order.getOrderProducts().size(),1);
         //상품 가격 총 2천원
         assertEquals(BigDecimal.valueOf(2000L),order.getTotalAmount());
     }

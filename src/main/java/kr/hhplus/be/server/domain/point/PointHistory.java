@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.point;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,12 +10,17 @@ import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "point_history")
+@Entity
 public class PointHistory extends AuditableEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long pointId;
     private Long userId;
     private BigDecimal amount;
     private BigDecimal balance;
+    @Enumerated(EnumType.STRING)
     private PointUseStatus  type;
 
     public PointHistory(Long pointId,Long userId, BigDecimal amount, BigDecimal balance, PointUseStatus type) {
