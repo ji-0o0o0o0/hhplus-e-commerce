@@ -9,7 +9,7 @@ public interface UserCouponRepository {
 
     List<UserCoupon> findAllByUserId(Long userId);
 
-    void save(UserCoupon userCoupon);
+    UserCoupon save(UserCoupon userCoupon);
 
     Optional<UserCoupon> findCouponByUserIdAndCouponId(Long id, Long couponId);
 }

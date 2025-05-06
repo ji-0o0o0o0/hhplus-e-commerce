@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class PointRepositoryImpl implements PointRepository {
     private final PointJpaRepository pointJpaRepository;
-    private PointHistoryJpaRepository pointHistoryJpaRepository;
+    private final PointHistoryJpaRepository pointHistoryJpaRepository;
     @Override
     public Optional<Point> findPointByUserId(Long userId) {
         return pointJpaRepository.findByUserId(userId);
@@ -21,7 +21,7 @@ public class PointRepositoryImpl implements PointRepository {
 
     @Override
     public List<PointHistory> findPointHistoryByUserId(Long userId) {
-        return pointHistoryJpaRepository.findAllByPoint_UserId(userId);
+        return pointHistoryJpaRepository.findAllByUserId(userId);
     }
 
     @Override

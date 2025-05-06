@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.infrastructure.coupon;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +29,8 @@ public class UserCouponRepositoryImpl implements UserCouponRepository {
     }
 
     @Override
-    public void save(UserCoupon userCoupon) {
+    public UserCoupon save(UserCoupon userCoupon) {
         userCouponJpaRepository.save(userCoupon);
+        return userCoupon;
     }
 }

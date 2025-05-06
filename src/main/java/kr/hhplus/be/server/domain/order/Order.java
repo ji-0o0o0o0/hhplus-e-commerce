@@ -28,6 +28,7 @@ public class Order extends AuditableEntity {
     private Long userCouponId;//null가능
     private boolean isCouponApplied;
     private BigDecimal totalAmount;
+    @Transient
     private BigDecimal discountedAmount;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
