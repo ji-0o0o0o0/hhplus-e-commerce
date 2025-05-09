@@ -23,7 +23,7 @@ public class CouponController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CouponResponse>> getUserCoupons(@PathVariable Long userId) {
-        CouponCommand.Request command = new CouponCommand.Request(userId, null);
+        CouponCommand.IssueRequest command = new CouponCommand.IssueRequest(userId, null);
         var result = couponFacade.getUserCoupons(command);
         return ResponseEntity.ok(CouponResponse.listFrom(result.userCoupons()));
     }

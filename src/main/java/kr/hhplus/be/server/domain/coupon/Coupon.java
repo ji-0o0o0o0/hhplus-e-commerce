@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
@@ -14,10 +15,15 @@ import static kr.hhplus.be.server.common.exception.ErrorCode.COUPON_OUT_OF_STOCK
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "coupon")
+@Entity
 public class Coupon extends AuditableEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String couponName;
     private BigDecimal discountValue;
+    @Enumerated(EnumType.STRING)
     private DiscountType discountType;
     private LocalDate startDate;
     private LocalDate endDate;

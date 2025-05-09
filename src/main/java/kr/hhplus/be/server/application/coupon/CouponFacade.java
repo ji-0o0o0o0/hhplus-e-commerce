@@ -15,15 +15,15 @@ public class CouponFacade {
     private final CouponService couponService;
     private final UserService userService;
     //쿠폰 발급
-    public void issueCoupon(CouponCommand.Request command) {
+    public CouponResult.Issue issueCoupon(CouponCommand.IssueRequest command) {
         User user = userService.getUserById(command.userId());
-        couponService.issueCouponTo(user, command.couponId());
+        return  CouponResult.Issue.from(couponService.issueCouponTo(user, command.couponId()));
     }
 
     //보유쿠폰 조회
-    public CouponResult getUserCoupons(CouponCommand.Request command) {
+    public CouponResult.UserCoupons getUserCoupons(CouponCommand.IssueRequest command) {
         User user = userService.getUserById(command.userId());
         List<UserCoupon> userCoupons = couponService.getUserCoupons(user);
-        return CouponResult.from(command.userId(), userCoupons);
+        return CouponResult.UserCoupons.from(command.userId(), userCoupons);
     }
 }

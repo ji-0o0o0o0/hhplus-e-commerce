@@ -6,8 +6,15 @@ import kr.hhplus.be.server.domain.order.OrderStatus;
 
 import java.util.List;
 
-public record CouponResult(Long userId, List<UserCoupon> userCoupons) {
-    public static CouponResult from(Long userId,List<UserCoupon> userCoupons) {
-        return new CouponResult(userId, userCoupons);
+public class CouponResult {
+    public record Issue(Long userId, Long couponId) {
+        public static Issue from(UserCoupon userCoupon) {
+            return new Issue(userCoupon.getUserId(), userCoupon.getCouponId());
+        }
+    }
+    public record UserCoupons(Long userId, List<UserCoupon> userCoupons) {
+        public static UserCoupons from(Long userId, List<UserCoupon> userCoupons) {
+            return new UserCoupons(userId, userCoupons);
+        }
     }
 }

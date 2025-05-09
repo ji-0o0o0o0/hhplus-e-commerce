@@ -8,7 +8,9 @@ public interface PointRepository {
 
     List<PointHistory> findPointHistoryByUserId(Long userId);
 
-    Point savePoint(Point point);
+    void savePoint(Point point);
 
-    PointHistory savePointHistory(PointHistory pointHistory);
+    void savePointHistory(PointHistory pointHistory);
+
+    void deleteAll();
 }

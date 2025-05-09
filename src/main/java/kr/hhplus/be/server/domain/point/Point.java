@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.point;
 
 
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.ApiException;
 import kr.hhplus.be.server.domain.common.entity.AuditableEntity;
 import lombok.AccessLevel;
@@ -13,10 +14,14 @@ import static kr.hhplus.be.server.common.exception.ErrorCode.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "point")
+@Entity
 public class Point extends AuditableEntity {
     private static final int MAX_CHARGE_ONCE = 1_000_000;
     private static final int MAX_CHARGE_TOTAL = 5_000_000;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
     private BigDecimal balance;
